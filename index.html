@@ -2,84 +2,93 @@
 <html lang="sv">
 <head>
   <meta charset="UTF-8" />
-  <title>Fråga Olle & Gästbok</title>
+  <title>Fråga Fredrik</title>
+
   <style>
     body {
       font-family: 'Comic Sans MS', cursive, sans-serif;
-      background-color: #ffcc00;
-      color: #001022;
+      background-color: #001022;
+      color: #ff00ff;
       text-align: center;
       margin: 0;
       padding: 20px;
+      overflow-x: hidden;
+      position: relative;
     }
 
-    h1 {
+    h1, h2 {
       font-size: 36px;
-      color: red;
-      text-shadow: 2px 2px yellow;
+      color: yellow;
+      text-shadow: 2px 2px red;
+    }
+
+    textarea, input[type="text"] {
+      width: 80%;
+      font-family: 'Comic Sans MS', cursive, sans-serif;
+      font-size: 16px;
+      border: 3px dotted pink;
+      margin-top: 10px;
     }
 
     textarea {
-      width: 80%;
-      height: 80px;
-      font-family: 'Comic Sans MS', cursive, sans-serif;
-      font-size: 16px;
-      border: 3px dotted red;
-      background-color: #001022;
-      color: yellow;
-      margin-bottom: 10px;
+      height: 100px;
+      background-color: #ffff99;
+      color: #000080;
+    }
+
+    input[type="text"] {
+      height: 35px;
+      background-color: #ffff99;
+      color: #000080;
     }
 
     button {
-      margin: 5px;
+      margin-top: 10px;
       padding: 10px 20px;
       font-size: 18px;
       font-weight: bold;
-      color: red;
-      background-color: yellow;
-      border: 2px solid #001022;
+      color: yellow;
+      background-color: red;
+      border: 2px solid pink;
       cursor: pointer;
     }
 
     button:hover {
-      background-color: #001022;
-      color: yellow;
+      background-color: pink;
+      color: red;
     }
 
     #response {
       margin-top: 20px;
       font-weight: bold;
       font-size: 24px;
-      color: #001022;
-      text-shadow: 1px 1px white;
-    }
-
-    #guestbookContainer {
-      margin-top: 30px;
-      width: 80%;
-      margin-left: auto;
-      margin-right: auto;
-      text-align: left;
-    }
-
-    #guestMessage {
-      width: 100%;
-      height: 80px;
-      font-size: 16px;
-      background-color: #001022;
-      color: yellow;
-      border: 2px dotted red;
-      margin-bottom: 10px;
+      color: cyan;
+      text-shadow: 1px 1px black;
     }
 
     #guestbookEntries {
-      max-height: 250px;
+      margin-top: 20px;
+      text-align: left;
+      width: 80%;
+      margin-left: auto;
+      margin-right: auto;
+      color: white;
+      font-size: 14px;
+      max-height: 300px;
       overflow-y: auto;
       padding: 10px;
       border: 2px dotted pink;
       background-color: #001122;
-      color: white;
-      font-size: 14px;
+    }
+
+    .entry {
+      border-bottom: 1px dotted pink;
+      padding: 8px 0;
+    }
+
+    .timestamp {
+      color: #00ffff;
+      font-size: 12px;
     }
 
     #hat {
@@ -94,49 +103,122 @@
     }
   </style>
 </head>
+
 <body>
-  <h1>Fråga Olle</h1>
+
+  <h1>Fråga Fredrik</h1>
 
   <textarea id="userInput" placeholder="Skriv här..."></textarea><br>
-  <button onclick="generateResponse()">Få svar</button>
-  <button onclick="window.location.href='fraga-fredrik.html'">Återgå till Fredrik</button>
+  <button onclick="generateResponse()">Få svar</button><br>
+  <button onclick="window.location.href='fraga-olle.html'">
+    Dåligt svar, fråga Olle istället
+  </button>
 
   <div id="response"></div>
 
-  <!-- Gästbok -->
-  <div id="guestbookContainer">
-    <h2>Gästbok</h2>
-    <textarea id="guestMessage" placeholder="Skriv ett meddelande..."></textarea><br>
-    <button onclick="addGuestbookEntry()">Lägg till meddelande</button>
-    <div id="guestbookEntries"></div>
-  </div>
+  <h2>Gästbok</h2>
+
+  <input type="text" id="guestName" placeholder="Ditt namn (obligatoriskt)">
+  <textarea id="guestMessage" placeholder="Skriv ett inlägg i gästboken..."></textarea><br>
+  <button onclick="addGuestbookEntry()">Skicka inlägg</button>
+
+  <div id="guestbookEntries"></div>
 
   <div id="hat"></div>
 
+  <!-- Supabase -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script>
-    // Fråga Olle
-    const responses = ["vafaaan", "mäktigt", "sån har jag i mitt shurgardförråd"];
+    // Byt ut mot dina Supabase-värden
+    const SUPABASE_URL = "https://gxovjflaunxsoalggykg.supabase.co";
+    const SUPABASE_KEY = "sb_publishable_7Rkwvt09TY9aR3F3Z6eQ1Q_rOim1pyH";
+    const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+  </script>
+
+  <script>
+    // Fråga Fredrik
+    const responses = [
+      "bra fråga, typ",
+      "kåt jävel typ?",
+      "brorsan",
+      "ja, tyvärr",
+      "nej, tyvärr",
+      "Intressant",
+      "vad menar du brorsan",
+      "Absolut",
+      "bruuudar",
+      "brudar?"
+    ];
 
     function generateResponse() {
       const input = document.getElementById("userInput").value.trim();
       const responseDiv = document.getElementById("response");
-      if (!input) { responseDiv.textContent = "Skriv något först."; return; }
+
+      if (!input) {
+        responseDiv.textContent = "Skriv något först.";
+        return;
+      }
+
       const randomIndex = Math.floor(Math.random() * responses.length);
       responseDiv.textContent = responses[randomIndex];
     }
 
-    // Gästbok
-    function addGuestbookEntry() {
-      const message = document.getElementById("guestMessage").value.trim();
-      if (!message) return alert("Skriv ett meddelande först!");
-      const entryDiv = document.getElementById("guestbookEntries");
-      const newEntry = document.createElement("div");
-      newEntry.textContent = message;
-      entryDiv.appendChild(newEntry);
-      document.getElementById("guestMessage").value = "";
-      entryDiv.scrollTop = entryDiv.scrollHeight; // scrolla ner automatiskt
+    // Ladda alla gästboksinlägg
+    async function loadGuestbook() {
+      const { data, error } = await supabase
+        .from('guestbook')
+        .select('*')
+        .order('created_at', { ascending: false });
+
+      if (error) return console.error(error);
+
+      const entriesDiv = document.getElementById("guestbookEntries");
+      entriesDiv.innerHTML = "";
+
+      data.forEach(entry => {
+        const div = document.createElement("div");
+        div.className = "entry";
+        const time = new Date(entry.created_at).toLocaleString("sv-SE");
+
+        div.innerHTML = `
+          <strong>${entry.name}</strong><br>
+          ${entry.message}<br>
+          <span class="timestamp">${time}</span>
+        `;
+
+        entriesDiv.appendChild(div);
+      });
     }
+
+    // Lägg till nytt inlägg
+    async function addGuestbookEntry() {
+      const name = document.getElementById("guestName").value.trim();
+      const message = document.getElementById("guestMessage").value.trim();
+
+      if (!name) return alert("Du måste fylla i ditt namn.");
+      if (!message) return alert("Du måste skriva ett inlägg.");
+
+      const { error } = await supabase
+        .from('guestbook')
+        .insert([{ name, message }]);
+
+      if (error) {
+        alert("Fel vid sparande");
+        return console.error(error);
+      }
+
+      // Töm formulär
+      document.getElementById("guestName").value = "";
+      document.getElementById("guestMessage").value = "";
+
+      // Ladda om gästboken
+      loadGuestbook();
+    }
+
+    // Kör direkt vid laddning
+    document.addEventListener('DOMContentLoaded', loadGuestbook);
   </script>
+
 </body>
 </html>
 
