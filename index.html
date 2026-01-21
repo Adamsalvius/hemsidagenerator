@@ -2,9 +2,29 @@
 <html lang="sv">
 <head>
   <meta charset="UTF-8" />
-  <title>Fråga Fredrik</title>
+  <title>Fråga Fredrik fita</title>
 
   <style>
+    /* Dölj systemcursor över hela sidan */
+    html, body, a, button, input, textarea, select {
+      cursor: none !important;
+    }
+
+    /* Custom cursor */
+    .custom-cursor {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 50px; /* justera efter din PNG */
+      height: 50px;
+      background: url('customa.png') no-repeat center center;
+      background-size: contain;
+      pointer-events: none; /* gör att klick går igenom */
+      transform: translate(-50%, -50%);
+      z-index: 9999;
+    }
+
+    /* Sida styling */
     body {
       font-family: 'Comic Sans MS', cursive, sans-serif;
       background-color: #001022;
@@ -50,7 +70,6 @@
       color: yellow;
       background-color: red;
       border: 2px solid pink;
-      cursor: pointer;
     }
 
     button:hover {
@@ -100,55 +119,18 @@
       image-rendering: pixelated;
       background: url('https://i.gifer.com/origin/08/0834037c00f0a7eea4215dbc9293dc6f_w200.gif') no-repeat center/contain;
       pointer-events: none;
-    } 
-
-.top-banner {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  background: #111;
-  color: #fff;
-  overflow: hidden;
-  height: 40px;
-  z-index: 9999;
-}
-
-.banner-content {
-  white-space: nowrap;
-  display: inline-block;
-  padding-left: 100%;
-  line-height: 40px;
-  font-size: 16px;
-  animation: scroll-left 15s linear infinite;
-}
-
-@keyframes scroll-left {
-  from {
-    transform: translateX(0);
-  }
-  to {
-    transform: translateX(-100%);
-  }
-}
-
-body {
-  padding-top: 40px;
-}
-
-    
+    }
   </style>
 </head>
 
 <body>
-<div class="top-banner">
-  <div class="banner-content" id="bannerText"></div>
-</div>
+
   <h1>Fråga Fredrik</h1>
+  <div class="custom-cursor"></div>
 
   <textarea id="userInput" placeholder="Skriv här..."></textarea><br>
   <button onclick="generateResponse()">Få svar</button><br>
-  <button onclick="window.location.href='olle.html'">
+  <button onclick="window.location.href='fraga-olle.html'">
     Dåligt svar, fråga Olle istället
   </button>
 
@@ -167,7 +149,6 @@ body {
   <!-- Supabase -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script>
-    // Byt ut mot dina Supabase-värden
     const SUPABASE_URL = "https://gxovjflaunxsoalggykg.supabase.co";
     const SUPABASE_KEY = "sb_publishable_7Rkwvt09TY9aR3F3Z6eQ1Q_rOim1pyH";
     const supabase2 = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
@@ -188,6 +169,13 @@ body {
       "brudar?"
     ];
 
+    // Custom cursor follow
+    const cursor = document.querySelector('.custom-cursor');
+    document.addEventListener('mousemove', e => {
+      cursor.style.left = e.clientX + 'px';
+      cursor.style.top = e.clientY + 'px';
+    });
+
     function generateResponse() {
       const input = document.getElementById("userInput").value.trim();
       const responseDiv = document.getElementById("response");
@@ -201,7 +189,6 @@ body {
       responseDiv.textContent = responses[randomIndex];
     }
 
-    // Ladda alla gästboksinlägg
     async function loadGuestbook() {
       const { data, error } = await supabase2
         .from('gästbok')
@@ -228,7 +215,6 @@ body {
       });
     }
 
-    // Lägg till nytt inlägg
     async function addGuestbookEntry() {
       const name = document.getElementById("guestName").value.trim();
       const message = document.getElementById("guestMessage").value.trim();
@@ -245,48 +231,14 @@ body {
         return console.error(error);
       }
 
-      // Töm formulär
       document.getElementById("guestName").value = "";
       document.getElementById("guestMessage").value = "";
 
-      // Ladda om gästboken
       loadGuestbook();
     }
 
-    // Kör direkt vid laddning
     document.addEventListener('DOMContentLoaded', loadGuestbook);
   </script>
-<script>
-  const messages = [
-    "Du är en färsk fläkt, glöm inte det!",
-    "Exklusiva erbjudanden hela veckan, typ",
-    "Snabb leverans i hela Sverige",
-    "Missa inte våra populäraste produkter"
-  ];
 
-  function getDailyMessage() {
-    const today = new Date().toISOString().slice(0, 10); // YYYY-MM-DD
-    let hash = 0;
-
-    for (let i = 0; i < today.length; i++) {
-      hash = today.charCodeAt(i) + ((hash << 5) - hash);
-    }
-
-    const index = Math.abs(hash) % messages.length;
-    return messages[index];
-  }
-
-  document.getElementById("bannerText").textContent = getDailyMessage();
-</script>
-
-  <div id="page-counter">
-  <span id="counter">–</span>
-</div>
-
-
+</body>
 </html>
-
-
-
-
-
