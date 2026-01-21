@@ -2,7 +2,7 @@
 <html lang="sv">
 <head>
   <meta charset="UTF-8" />
-  <title>Fråga Fredrik</title>
+  <title>Fråga Fredrik fita</title>
 
   <style>
     html, body, a, button, input, textarea, select {
@@ -13,16 +13,36 @@
       position: fixed;
       top: 0;
       left: 0;
-      width: 50px; /* justera efter din PNG */
-      height: 50px;
-      background: url('customa.png') no-repeat center center;
+      width: 24px;
+      height: 24px;
+      background: url('customa.jpg') no-repeat center center;
       background-size: contain;
-      pointer-events: none; /* gör att klick går igenom */
+      pointer-events: none;
       transform: translate(-50%, -50%);
       z-index: 9999;
     }
 
-    /* Sida styling */
+    .character {
+      position: relative;
+      width: 150px;
+      margin: 20px auto;
+    }
+
+    .body {
+      display: block;
+      width: 100%;
+    }
+
+    .head {
+      position: absolute;
+      top: -49px;
+      left: 50%;
+      width: 100%;
+      /* Pivot längst upp på höger sida så det bara kan nicka uppåt */
+      transform-origin: 90% 20%;
+      transform: translate(-50%, 0) rotate(0deg);
+    }
+
     body {
       font-family: 'Comic Sans MS', cursive, sans-serif;
       background-color: #001022;
@@ -34,11 +54,7 @@
       position: relative;
     }
 
-    h1, h2 {
-      font-size: 36px;
-      color: yellow;
-      text-shadow: 2px 2px red;
-    }
+    h1, h2 { font-size: 36px; color: yellow; text-shadow: 2px 2px red; }
 
     textarea, input[type="text"] {
       width: 80%;
@@ -48,17 +64,8 @@
       margin-top: 10px;
     }
 
-    textarea {
-      height: 100px;
-      background-color: #ffff99;
-      color: #000080;
-    }
-
-    input[type="text"] {
-      height: 35px;
-      background-color: #ffff99;
-      color: #000080;
-    }
+    textarea { height: 100px; background-color: #ffff99; color: #000080; }
+    input[type="text"] { height: 35px; background-color: #ffff99; color: #000080; }
 
     button {
       margin-top: 10px;
@@ -70,18 +77,9 @@
       border: 2px solid pink;
     }
 
-    button:hover {
-      background-color: pink;
-      color: red;
-    }
+    button:hover { background-color: pink; color: red; }
 
-    #response {
-      margin-top: 20px;
-      font-weight: bold;
-      font-size: 24px;
-      color: cyan;
-      text-shadow: 1px 1px black;
-    }
+    #response { margin-top: 20px; font-weight: bold; font-size: 24px; color: cyan; text-shadow: 1px 1px black; }
 
     #guestbookEntries {
       margin-top: 20px;
@@ -98,15 +96,8 @@
       background-color: #001122;
     }
 
-    .entry {
-      border-bottom: 1px dotted pink;
-      padding: 8px 0;
-    }
-
-    .timestamp {
-      color: #00ffff;
-      font-size: 12px;
-    }
+    .entry { border-bottom: 1px dotted pink; padding: 8px 0; }
+    .timestamp { color: #00ffff; font-size: 12px; }
 
     #hat {
       position: absolute;
@@ -123,121 +114,118 @@
 
 <body>
 
-  <h1>Fråga Fredrik</h1>
-  <div class="custom-cursor"></div>
+<h1>Fråga Fredrik</h1>
+<div class="custom-cursor"></div>
 
-  <textarea id="userInput" placeholder="Skriv här..."></textarea><br>
-  <button onclick="generateResponse()">Få svar</button><br>
-  <button onclick="window.location.href='fraga-olle.html'">
-    Dåligt svar, fråga Olle istället
-  </button>
+<div class="character">
+  <img src="kropp.png" class="body" alt="Kropp">
+  <img src="huvud.png" class="head" alt="Huvud">
+</div>
 
-  <div id="response"></div>
+<textarea id="userInput" placeholder="Skriv här..."></textarea><br>
+<button onclick="generateResponse()">Få svar</button><br>
+<button onclick="window.location.href='fraga-olle.html'">Dåligt svar, fråga Olle istället</button>
 
-  <h2>Gästbok</h2>
+<div id="response"></div>
 
-  <input type="text" id="guestName" placeholder="Ditt namn (obligatoriskt)">
-  <textarea id="guestMessage" placeholder="Skriv ett inlägg i gästboken..."></textarea><br>
-  <button onclick="addGuestbookEntry()">Skicka inlägg</button>
+<h2>Gästbok</h2>
 
-  <div id="guestbookEntries"></div>
+<input type="text" id="guestName" placeholder="Ditt namn (obligatoriskt)">
+<textarea id="guestMessage" placeholder="Skriv ett inlägg i gästboken..."></textarea><br>
+<button onclick="addGuestbookEntry()">Skicka inlägg</button>
 
-  <div id="hat"></div>
+<div id="guestbookEntries"></div>
 
-  <!-- Supabase -->
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script>
-    const SUPABASE_URL = "https://gxovjflaunxsoalggykg.supabase.co";
-    const SUPABASE_KEY = "sb_publishable_7Rkwvt09TY9aR3F3Z6eQ1Q_rOim1pyH";
-    const supabase2 = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-  </script>
+<div id="hat"></div>
 
-  <script>
-    // Fråga Fredrik
-    const responses = [
-      "bra fråga, typ",
-      "kåt jävel typ?",
-      "brorsan",
-      "ja, tyvärr",
-      "nej, tyvärr",
-      "Intressant",
-      "vad menar du brorsan",
-      "Absolut",
-      "bruuudar",
-      "brudar?"
-    ];
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+const SUPABASE_URL = "https://gxovjflaunxsoalggykg.supabase.co";
+const SUPABASE_KEY = "sb_publishable_7Rkwvt09TY9aR3F3Z6eQ1Q_rOim1pyH";
+const supabase2 = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+</script>
 
-    // Custom cursor follow
-    const cursor = document.querySelector('.custom-cursor');
-    document.addEventListener('mousemove', e => {
-      cursor.style.left = e.clientX + 'px';
-      cursor.style.top = e.clientY + 'px';
-    });
+<script>
+// Fråga Fredrik
+const responses = ["bra fråga, typ","kåt jävel typ?","brorsan","ja, tyvärr","nej, tyvärr","Intressant","vad menar du brorsan","Absolut","bruuudar","brudar?"];
 
-    function generateResponse() {
-      const input = document.getElementById("userInput").value.trim();
-      const responseDiv = document.getElementById("response");
+// Custom cursor follow
+const cursor = document.querySelector('.custom-cursor');
+document.addEventListener('mousemove', e => {
+  cursor.style.left = e.clientX + 'px';
+  cursor.style.top = e.clientY + 'px';
+});
 
-      if (!input) {
-        responseDiv.textContent = "Skriv något först.";
-        return;
-      }
+// Få svar + huvud-animation
+function generateResponse() {
+  const input = document.getElementById("userInput").value.trim();
+  const responseDiv = document.getElementById("response");
 
-      const randomIndex = Math.floor(Math.random() * responses.length);
-      responseDiv.textContent = responses[randomIndex];
-    }
+  if (!input) {
+    responseDiv.textContent = "Skriv något först.";
+    return;
+  }
 
-    async function loadGuestbook() {
-      const { data, error } = await supabase2
-        .from('gästbok')
-        .select('*')
-        .order('created_at', { ascending: false });
+  const randomIndex = Math.floor(Math.random() * responses.length);
+  responseDiv.textContent = responses[randomIndex];
 
-      if (error) return console.error(error);
+  animateHead();
+}
 
-      const entriesDiv = document.getElementById("guestbookEntries");
-      entriesDiv.innerHTML = "";
+// Huvud roterar bara uppåt (positiva vinklar = nickar uppåt)
+function animateHead() {
+  const head = document.querySelector('.head');
+  const angles = [10, 15, 20, 25]; // bara uppåt nick
+  const angle1 = angles[Math.floor(Math.random() * angles.length)];
+  const angle2 = angles[Math.floor(Math.random() * angles.length)];
 
-      data.forEach(entry => {
-        const div = document.createElement("div");
-        div.className = "entry";
-        const time = new Date(entry.created_at).toLocaleString("sv-SE");
+  head.style.transition = "transform 0.15s";
+  head.style.transform = `translate(-50%, 0) rotate(-${angle1}deg)`; // -deg = nick uppåt
 
-        div.innerHTML = `
-          <strong>${entry.name}</strong><br>
-          ${entry.message}<br>
-          <span class="timestamp">${time}</span>
-        `;
+  setTimeout(() => {
+    head.style.transform = `translate(-50%, 0) rotate(-${angle2}deg)`;
+  }, 150);
 
-        entriesDiv.appendChild(div);
-      });
-    }
+  setTimeout(() => {
+    head.style.transform = "translate(-50%, 0) rotate(0deg)";
+  }, 300);
+}
 
-    async function addGuestbookEntry() {
-      const name = document.getElementById("guestName").value.trim();
-      const message = document.getElementById("guestMessage").value.trim();
+// Gästbok
+async function loadGuestbook() {
+  const { data, error } = await supabase2.from('gästbok').select('*').order('created_at', { ascending: false });
+  if (error) return console.error(error);
 
-      if (!name) return alert("Du måste fylla i ditt namn.");
-      if (!message) return alert("Du måste skriva ett inlägg.");
+  const entriesDiv = document.getElementById("guestbookEntries");
+  entriesDiv.innerHTML = "";
 
-      const { error } = await supabase2
-        .from('gästbok')
-        .insert([{ name, message }]);
+  data.forEach(entry => {
+    const div = document.createElement("div");
+    div.className = "entry";
+    const time = new Date(entry.created_at).toLocaleString("sv-SE");
+    div.innerHTML = `<strong>${entry.name}</strong><br>${entry.message}<br><span class="timestamp">${time}</span>`;
+    entriesDiv.appendChild(div);
+  });
+}
 
-      if (error) {
-        alert("Fel vid sparande");
-        return console.error(error);
-      }
+async function addGuestbookEntry() {
+  const name = document.getElementById("guestName").value.trim();
+  const message = document.getElementById("guestMessage").value.trim();
 
-      document.getElementById("guestName").value = "";
-      document.getElementById("guestMessage").value = "";
+  if (!name) return alert("Du måste fylla i ditt namn.");
+  if (!message) return alert("Du måste skriva ett inlägg.");
 
-      loadGuestbook();
-    }
+  const { error } = await supabase2.from('gästbok').insert([{ name, message }]);
+  if (error) { alert("Fel vid sparande"); return console.error(error); }
 
-    document.addEventListener('DOMContentLoaded', loadGuestbook);
-  </script>
+  document.getElementById("guestName").value = "";
+  document.getElementById("guestMessage").value = "";
+
+  loadGuestbook();
+}
+
+document.addEventListener('DOMContentLoaded', loadGuestbook);
+</script>
 
 </body>
 </html>
-
