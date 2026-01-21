@@ -132,7 +132,7 @@
     // Byt ut mot dina Supabase-värden
     const SUPABASE_URL = "https://gxovjflaunxsoalggykg.supabase.co";
     const SUPABASE_KEY = "sb_publishable_7Rkwvt09TY9aR3F3Z6eQ1Q_rOim1pyH";
-    const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+    const supabase2 = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
   </script>
 
   <script>
@@ -165,7 +165,7 @@
 
     // Ladda alla gästboksinlägg
     async function loadGuestbook() {
-      const { data, error } = await supabase
+      const { data, error } = await supabase2
         .from('guestbook')
         .select('*')
         .order('created_at', { ascending: false });
@@ -198,7 +198,7 @@
       if (!name) return alert("Du måste fylla i ditt namn.");
       if (!message) return alert("Du måste skriva ett inlägg.");
 
-      const { error } = await supabase
+      const { error } = await supabase2
         .from('guestbook')
         .insert([{ name, message }]);
 
@@ -221,3 +221,4 @@
 
 </body>
 </html>
+
